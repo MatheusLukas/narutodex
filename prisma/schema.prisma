@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum NatureType {
+  FIRE
+  WATER
+  WIND
+  EARTH
+  LIGHTNING
+}
+
+enum Type {
+  CHARACTER
+  CLAN
+  HOKAGE
+  KAZEKAGE
+  RAIKAGE
+  TSUCHIKAGE
+  MIZUKAGE
+  AKATSUKI
+  JINCHUURIKI
+  KEKKEI_GENKAI
+  BIJUU
+}
+
+enum BijuuType {
+  SHUKAKU
+  MATATABI
+  ISOBU
+  SON_GOKU
+  KOKUO
+  SAIKEN
+  CHOMEI
+  GYUKI
+  KURAMA
+  JUUBI
+}
+
+model Character {
+  id           String       @id @default(uuid())
+  name         String
+  image        String
+  natureType   NatureType[]
+  type         Type[]
+  clan         String?
+  kekkeiGenkai String[]
+  bijuu        BijuuType[]
+}
+
+model Clan {
+  id      String  @id @default(uuid())
+  name    String
+  image   String
+  village String?
+  type    Type[]
+}
+
+model Bijuu {
+  id           String    @id @default(uuid())
+  name         BijuuType
+  image        String
+  history      String?
+  jinchuurikis String[]
+  type         Type[]
+}
+
+model kekkei_genkai {
+  id          String  @id @default(uuid())
+  name        String
+  image       String
+  description String?
+  type        Type[]
+}
