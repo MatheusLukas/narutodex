@@ -26,7 +26,7 @@ export function InputTags({ field, text }: Props) {
       {(api) => (
         <>
           <TagsInput.Label>{text}</TagsInput.Label>
-          <TagsInput.Control className="border bg-background flex flex-row flex-wrap gap-2 px-4 py-2">
+          <TagsInput.Control className="border bg-background flex flex-row flex-wrap gap-2 px-4 py-2 rounded-md">
             {api.value.map((value, index) => (
               <TagsInput.Item
                 key={index}

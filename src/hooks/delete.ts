@@ -1,4 +1,3 @@
-import { utapi } from "@/app/api/uploadthing/core";
 import ky from "ky";
 
 export const deleteQuery = async ({

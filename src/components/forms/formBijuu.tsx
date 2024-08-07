@@ -33,15 +33,12 @@ export type InputsBijuu = {
 export function FormBijuu() {
   const queryClient = useQueryClient();
   const { bijuu } = useBijuu();
-  const [key, setKey] = useState<string>();
 
-  const mutation = useMutation({
+  const {mutateAsync} = useMutation({
     mutationFn: postQuery,
     onSuccess: () => {
-      toast.success("Bijuu created");
       queryClient.refetchQueries({ queryKey: ["characters"] });
     },
-    onError: () => toast.error("Error to create Bijuu"),
   });
 
   useEffect(() => {
@@ -65,7 +62,7 @@ export function FormBijuu() {
 
   const onSubmit = (data: InputsBijuu) => {
     console.log("oi");
-    mutation.mutate({
+    toast.promise(mutateAsync({
       data: {
         id: bijuu.id,
         name: data.name,
@@ -75,14 +72,18 @@ export function FormBijuu() {
         type: data.type,
       },
       search: "bijuu",
-    });
+    }), {
+      loading: "Deleting...",
+      success: "Bijuu Created",
+      error: "Error to create Bijuu"
+    })
+
     reset();
     setValue("jinchuurikis", []);
     setValue("history", "");
     setValue("type", ["BIJUU"]);
   };
 
-  console.log(watch());
 
   return (
     <Card className="max-w-[480px]">

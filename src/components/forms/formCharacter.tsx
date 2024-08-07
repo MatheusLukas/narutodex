@@ -34,18 +34,14 @@ export type Inputs = {
 };
 
 export function FormCharacter() {
-  console.count("FormCharacter");
   const { character } = useCharacter();
   const queryClient = useQueryClient();
-  const [key, setKey] = useState<string>();
 
-  const mutation = useMutation({
+  const {mutateAsync} = useMutation({
     mutationFn: postQuery,
     onSuccess: () => {
-      toast.success("Character created");
       queryClient.refetchQueries({ queryKey: ["characters"] });
     },
-    onError: () => toast.error("Error to create character"),
   });
 
   useEffect(() => {
@@ -80,8 +76,7 @@ export function FormCharacter() {
   });
 
   const onSubmit = (data: Inputs) => {
-    console.log(data, "oi");
-    mutation.mutate({
+    toast.promise(mutateAsync({
       data: {
         id: character.id,
         name: data.name,
@@ -93,6 +88,10 @@ export function FormCharacter() {
         clan: data.clan,
       },
       search: "character",
+    }), {
+      loading: "Creating...",
+      success: "Character Created",
+      error: "Error to create Character"
     });
     reset();
     setValue("natureType", ["WIND"]);
@@ -102,8 +101,6 @@ export function FormCharacter() {
     setValue("kekkeiGenkai", []);
   };
 
-  console.log(watch());
-  console.log(errors);
 
   return (
     <Card className="max-w-[480px]">

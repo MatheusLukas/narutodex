@@ -32,13 +32,11 @@ export function FormCla() {
   const queryClient = useQueryClient();
   const { clan } = useClan();
 
-  const mutation = useMutation({
+  const {mutateAsync} = useMutation({
     mutationFn: postQuery,
     onSuccess: () => {
-      toast.success("Clan created");
       queryClient.refetchQueries({ queryKey: ["characters"] });
     },
-    onError: () => toast.error("Error to Clan character"),
   });
 
   useEffect(() => {
@@ -68,7 +66,7 @@ export function FormCla() {
 
   const onSubmit = (data: InputsCla) => {
     console.log(data, "data");
-    mutation.mutate({
+    toast.promise(mutateAsync({
       data: {
         id: clan.id,
         name: data.name,
@@ -77,13 +75,15 @@ export function FormCla() {
         type: data.type,
       },
       search: "clan",
+    }), {
+      loading: "Creating...",
+      success: "Clan Created",
+      error: "Error to create Clan"
     });
     reset();
     setValue("type", ["CLAN"]);
   };
 
-  console.log(watch());
-  console.log(errors);
 
   return (
     <Card className="max-w-[480px]">

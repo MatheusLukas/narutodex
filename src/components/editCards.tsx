@@ -25,13 +25,11 @@ type Props = {
 
 export function EditCards({ character, search }: Props) {
   const queryClient = useQueryClient();
-  const mutation = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: deleteQuery,
     onSuccess: () => {
-      toast.success("Character deleted");
       queryClient.refetchQueries({ queryKey: ["characters"] });
     },
-    onError: () => toast.error("Error to delete character"),
   });
 
   async function deleteCharacter(
@@ -39,8 +37,14 @@ export function EditCards({ character, search }: Props) {
     characterImage: string
   ) {
     if (characterId && characterImage && search) {
-      // await mutation.mutateAsync({ characterId, search });
-      // apagar a imagem do uploadthing
+      await ky.delete("/api/uploadthing", {
+        json: { key: characterImage },
+      });
+      toast.promise(mutateAsync({ characterId, search }), {
+        loading: "Deleting...",
+        success: "Character deleted",
+        error: "Error to delete character",
+      });
     }
   }
 
@@ -64,21 +68,22 @@ export function EditCards({ character, search }: Props) {
     });
   }
   return (
-    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-4 z-20 flex">
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-4 z-20 hidden group-hover/edit:flex">
       <DialogDelete>
         <Button
           variant="destructive"
           onClick={() => deleteCharacter(character.id, character.image)}
+          disabled={isPending}
         >
-          Delete Character
+          {isPending ? "Deleting..." : "Delete Character"}
         </Button>
       </DialogDelete>
       <Button
-        variant={"default"}
-        className="bg-blue-500 rounded-xl hover:bg-blue-500 "
+        variant="ghost"
+        className="animate-jump-in rounded-md"
         onClick={() => insert()}
       >
-        <Pen className="w-8 h-8 text-white" />
+        <Pen className="w-8 h-8 text-primary" />
       </Button>
     </div>
   );
