@@ -21,10 +21,10 @@ export function DialogDelete({ children }: Props) {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant={"default"}
-          className="bg-red-500 rounded-xl hover:bg-red-500"
+          variant={"ghost"}
+          className="animate-jump-in rounded-md"
         >
-          <Trash className="w-8 h-8 text-white" />
+          <Trash className="w-8 h-8 text-destructive" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

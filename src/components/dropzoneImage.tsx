@@ -59,7 +59,6 @@ export function DropzoneImage({ field }: Props) {
           className="border-border border-4 p-4 hover:cursor-pointer bg-background ut-label:pointer-events-none"
           endpoint="imageUploader"
           onClientUploadComplete={(res) => {
-            console.log(res, "esse");
             field.onChange(res[0].url);
             setKey(res[0].key);
             toast.success("Image uploaded");

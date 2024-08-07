@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { SkeletonCard } from "./skeletonCard";
-import { BorderBeam } from "./borderBeam";
 import { EditCards } from "./editCards";
 import { CharacterSchemaType } from "prisma/zod/character";
+import { BorderBeam } from "./magicui/border-beam";
 
 enum FieldType {
   natureType = "Nature Type",
@@ -91,7 +91,7 @@ export function CardCategory() {
   };
   return (
     <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-16 w-fit">
-      {isLoading && data ? (
+      {isLoading ? (
         <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 absolute place-items">
           <SkeletonCard />
           <SkeletonCard />
@@ -101,10 +101,10 @@ export function CardCategory() {
         Array.isArray(data) &&
         data?.map((character: CharacterSchemaType) => (
           <div
-            className="relative rounded-xl h-fit group-hover animate-fade-right animate-duration-500"
+            className="relative rounded-xl h-fit group animate-fade-right animate-duration-500"
             key={character.id}
           >
-            <div className="h-fit w-80 md:w-96 bg-slate-800 relative rounded-xl ">
+            <div className="h-fit w-80 md:w-96 bg-slate-800 relative rounded-xl group/edit">
               <Image
                 className="object-cover w-full h-80 rounded-t-xl"
                 src={character.image}
@@ -129,14 +129,14 @@ export function CardCategory() {
                   {character.clan}
                 </p>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-700 to-zinc-500 opacity-50 rounded-xl" />
+              <div className="absolute inset-0 bg-muted opacity-50 rounded-xl" />
               <div>
                 <div className="p-3">
                   {Object.keys(character).map((key: string) =>
                     verifyKey(key) ? (
                       <div key={key} className="text-white">
                         <p>
-                          {FieldType[key as keyof typeof FieldType]}:
+                          {FieldType[key as keyof typeof FieldType]}: {" "}
                           {formatValue(
                             character[key as keyof typeof character]
                           )}

@@ -1,8 +1,8 @@
 import { cardsInfos } from "@/constants/cards";
 import { Card } from "./card";
-import { BorderBeam } from "./borderBeam";
 import { MotionDiv } from "@/lib/framer";
 import Link from "next/link";
+import { BorderBeam } from "./magicui/border-beam";
 
 export function AboutNaruto() {
   return (

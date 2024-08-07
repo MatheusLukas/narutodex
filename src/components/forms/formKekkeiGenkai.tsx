@@ -32,13 +32,11 @@ export function FormKekkeiGenkai() {
   const queryClient = useQueryClient();
   const { kekkeiGenkai } = useKekkeiGenkai();
 
-  const mutation = useMutation({
+  const {mutateAsync} = useMutation({
     mutationFn: postQuery,
     onSuccess: () => {
-      toast.success("Kekkei Genkai created");
       queryClient.refetchQueries({ queryKey: ["characters"] });
     },
-    onError: () => toast.error("Error to create Kekkei Genkai"),
   });
 
   useEffect(() => {
@@ -59,7 +57,7 @@ export function FormKekkeiGenkai() {
     });
 
   const onSubmit = (data: InputsKekkeiGenkai) => {
-    mutation.mutate({
+    toast.promise(mutateAsync({
       data: {
         id: kekkeiGenkai.id,
         name: data.name,
@@ -67,7 +65,11 @@ export function FormKekkeiGenkai() {
         description: data.description,
         type: data.type,
       },
-      search: "kekkei-genkai",
+      search: "kekkei_genkai",
+    }), {
+      loading: "Creating...",
+      success: "Kekkei Genkai Created",
+      error: "Error to create Kekkei Genkai"
     });
     reset();
     setValue("description", "");

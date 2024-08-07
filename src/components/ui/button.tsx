@@ -12,7 +12,7 @@ export const ButtonStyles = tv({
   ],
   variants: {
     variant: {
-      default: ["bg-primary text-primary-foreground", "hover:bg-primary/90"],
+      default: ["bg-primary text-primary-foreground rounded-md", "hover:bg-primary/90"],
       destructive: [
         "bg-destructive text-destructive-foreground",
         "hover:bg-destructive/90",
