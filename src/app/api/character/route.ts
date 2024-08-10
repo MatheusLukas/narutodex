@@ -52,17 +52,28 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const {
+  const id = searchParams.get("id");
+  try {
+    if(id) {
+      const character = await prisma.character.findUnique({
+        where: { id },
+      });
+      if (!character) {
+        return new Response("Character not found", { status: 404 });
+      }
+      return new Response(JSON.stringify(character), { status: 200 });
+    }else {
+      const {
     type: [type],
   } = characterSchema
     .pick({ type: true })
     .parse({ type: [searchParams.get("type")] });
-  try {
     const characters = await prisma.character.findMany({
       where: { type: { has: type } },
     });
     return new Response(JSON.stringify(characters), { status: 200 });
-  } catch (e) {
+    }
+  }catch (e) {
     if (e instanceof z.ZodError) {
       return new Response(e.message, { status: 400 });
     } else if (e instanceof Error) {

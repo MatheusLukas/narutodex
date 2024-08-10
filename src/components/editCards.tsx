@@ -1,18 +1,15 @@
 import { Pen } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button, ButtonStyles } from "./ui/button";
 import { DialogDelete } from "./dialogDelete";
 import { CharacterSchemaType } from "prisma/zod/character";
-import { useCharacter } from "@/store/character";
 import { BijuuSchemaType } from "prisma/zod/bijuu";
 import { ClanSchemaType } from "prisma/zod/cla";
 import { kekkeiGenkaiSchemaType } from "prisma/zod/kekkei-genkai";
-import { useBijuu } from "@/store/bijuu";
 import { toast } from "sonner";
-import { useClan } from "@/store/clan";
-import { useKekkeiGenkai } from "@/store/kekkei-genkai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteQuery } from "@/hooks/delete";
 import ky from "ky";
+import Link from "next/link";
 
 type Props = {
   character:
@@ -37,31 +34,18 @@ export function EditCards({ character, search }: Props) {
     characterImage: string
   ) {
     if (characterId && characterImage && search) {
-      await ky.delete("/api/uploadthing", {
+       toast.promise(ky.delete("/api/uploadthing", {
         json: { key: characterImage },
-      });
-      toast.promise(mutateAsync({ characterId, search }), {
+      }), {
         loading: "Deleting...",
         success: "Character deleted",
         error: "Error to delete character",
       });
+      mutateAsync({ characterId, search })
     }
   }
 
-  function insert() {
-    if (search === "character") {
-      useCharacter.getState().setCharacters(character as CharacterSchemaType);
-    } else if (search === "bijuu") {
-      useBijuu.getState().setBijuu(character as BijuuSchemaType);
-    } else if (search === "clan") {
-      useClan.getState().setClan(character as ClanSchemaType);
-    } else if (search === "kekkei-genkai") {
-      useKekkeiGenkai
-        .getState()
-        .setKekkeiGenkai(character as kekkeiGenkaiSchemaType);
-    } else {
-      toast.error("Error to insert");
-    }
+  function scrollTop() {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -78,12 +62,13 @@ export function EditCards({ character, search }: Props) {
           {isPending ? "Deleting..." : "Delete Character"}
         </Button>
       </DialogDelete>
-      <Button
-        variant="ghost"
-        className="animate-jump-in rounded-md"
-        onClick={() => insert()}
+      <Button variant="ghost" className="animate-jump-in rounded-md" asChild>
+      <Link
+        href={{query: {type: search, id: character.id}}}
+        onClick={() => {scrollTop()}}
       >
         <Pen className="w-8 h-8 text-primary" />
+      </Link>
       </Button>
     </div>
   );

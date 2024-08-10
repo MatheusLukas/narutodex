@@ -50,17 +50,29 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const {
-    type: [type],
-  } = bijuuSchema
-    .pick({ type: true })
-    .parse({ type: [searchParams.get("type")] });
-  try {
-    const bijuus = await prisma.bijuu.findMany({
-      where: { type: { has: type } },
-    });
+  const id = searchParams.get("id");
 
-    return new Response(JSON.stringify(bijuus), { status: 200 });
+  try {
+    if (id) {
+      const bijuu = await prisma.bijuu.findUnique({
+        where: { id },
+      });
+      if (!bijuu) {
+        return new Response("Bijuu not found", { status: 404 });
+      }
+      return new Response(JSON.stringify(bijuu), { status: 200 });
+    } else {
+      const {
+        type: [type],
+      } = bijuuSchema
+        .pick({ type: true })
+        .parse({ type: [searchParams.get("type")] });
+
+      const bijuus = await prisma.bijuu.findMany({
+        where: { type: { has: type } },
+      });
+      return new Response(JSON.stringify(bijuus), { status: 200 });
+    }
   } catch (e) {
     if (e instanceof z.ZodError) {
       return new Response(e.message, { status: 400 });

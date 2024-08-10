@@ -15,12 +15,13 @@ import { Button } from "../ui/button";
 import { Multiple } from "../multipleSelect";
 import { InputTags } from "../tagsInput";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCharacter } from "@/store/character";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { postQuery } from "@/hooks/post";
 import { DropzoneImage } from "../dropzoneImage";
 import { BijuuType, NatureType, Type } from "@prisma/client";
+import { useSearchParams } from "next/navigation";
+import { useGetCharacters } from "@/hooks/get-characters/hook";
 
 export type Inputs = {
   id?: string;
@@ -34,8 +35,10 @@ export type Inputs = {
 };
 
 export function FormCharacter() {
-  const { character } = useCharacter();
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id') ?? ""
+  const { data: character } = useGetCharacters<Inputs>("character", id);
 
   const {mutateAsync} = useMutation({
     mutationFn: postQuery,
@@ -45,6 +48,7 @@ export function FormCharacter() {
   });
 
   useEffect(() => {
+    if (!character) return;
     setValue("name", character.name);
     setValue("image", character.image);
     setValue("natureType", character.natureType ?? []);
@@ -65,20 +69,20 @@ export function FormCharacter() {
   } = useForm<Inputs>({
     resolver: zodResolver(characterSchema),
     defaultValues: {
-      name: character.name,
-      image: character.image,
-      clan: character.clan,
-      type: character.type,
-      natureType: character.natureType,
-      bijuu: character.bijuu,
-      kekkeiGenkai: character.kekkeiGenkai,
+      name: character?.name,
+      image: character?.image,
+      clan: character?.clan,
+      type: character?.type,
+      natureType: character?.natureType,
+      bijuu: character?.bijuu,
+      kekkeiGenkai: character?.kekkeiGenkai,
     },
   });
 
   const onSubmit = (data: Inputs) => {
     toast.promise(mutateAsync({
       data: {
-        id: character.id,
+        id: id,
         name: data.name,
         image: data.image,
         natureType: data.natureType,
@@ -89,16 +93,20 @@ export function FormCharacter() {
       },
       search: "character",
     }), {
-      loading: "Creating...",
-      success: "Character Created",
-      error: "Error to create Character"
+      loading: id ? "Updating..." : "Creating...",
+      success: id ? "Character Updated" : "Character Created",
+      error: id ? "Error to update Character" : "Error to create Character"
     });
     reset();
-    setValue("natureType", ["WIND"]);
     setValue("type", ["CHARACTER"]);
     setValue("clan", "");
     setValue("bijuu", []);
     setValue("kekkeiGenkai", []);
+    if (id) {
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('id');
+      window.history.pushState({}, '', newUrl.toString());
+    }
   };
 
 
@@ -149,7 +157,7 @@ export function FormCharacter() {
             />
           </div>
           <Button className="w-full" type="submit">
-            Submit
+            {id ? "Update" : "Create"}
           </Button>
         </form>
       </CardContent>

@@ -1,4 +1,5 @@
-import { cn } from "@/lib/utils"
+import { cn } from "mizuhara/utils"
+
 
 function Skeleton({
   className,

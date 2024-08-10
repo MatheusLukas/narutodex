@@ -43,18 +43,29 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const {
+  const id = searchParams.get("id");
+  try{
+    if (id) {
+      const clan = await prisma.clan.findUnique({
+        where: { id },
+      });
+      if (!clan) {
+        return new Response("Clan not found", { status: 404 });
+      }
+      return new Response(JSON.stringify(clan), { status: 200 });
+    }
+    const {
     type: [type],
   } = clanSchema
     .pick({ type: true })
     .parse({ type: [searchParams.get("type")] });
-  try {
+
     const clans = await prisma.clan.findMany({
       where: { type: { has: type } },
     });
 
     return new Response(JSON.stringify(clans), { status: 200 });
-  } catch (e) {
+  }catch (e) {
     if (e instanceof z.ZodError) {
       return new Response(e.message, { status: 400 });
     } else if (e instanceof Error) {
