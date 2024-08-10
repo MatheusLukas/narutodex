@@ -13,12 +13,13 @@ import { Label } from "@radix-ui/react-label";
 import { Button } from "../ui/button";
 import { clanSchema } from "prisma/zod/cla";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useClan } from "@/store/clan";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { postQuery } from "@/hooks/post";
 import { DropzoneImage } from "../dropzoneImage";
 import { Type } from "@prisma/client";
+import { useSearchParams } from "next/navigation";
+import { useGetCharacters } from "@/hooks/get-characters/hook";
 
 export type InputsCla = {
   id?: string;
@@ -30,7 +31,9 @@ export type InputsCla = {
 
 export function FormCla() {
   const queryClient = useQueryClient();
-  const { clan } = useClan();
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id') ?? ""
+  const { data: clan } = useGetCharacters<InputsCla>("clan", id);
 
   const {mutateAsync} = useMutation({
     mutationFn: postQuery,
@@ -40,6 +43,7 @@ export function FormCla() {
   });
 
   useEffect(() => {
+    if (!clan) return;
     setValue("name", clan.name);
     setValue("image", clan.image);
     setValue("village", clan.village ?? "");
@@ -57,10 +61,10 @@ export function FormCla() {
     resolver: zodResolver(clanSchema),
     defaultValues: {
       id: undefined,
-      name: clan.name,
+      name: clan?.name,
       type: ["CLAN"],
-      image: clan.image,
-      village: clan.village,
+      image: clan?.image,
+      village: clan?.village,
     },
   });
 
@@ -68,7 +72,7 @@ export function FormCla() {
     console.log(data, "data");
     toast.promise(mutateAsync({
       data: {
-        id: clan.id,
+        id: id,
         name: data.name,
         image: data.image,
         village: data.village,
@@ -76,12 +80,17 @@ export function FormCla() {
       },
       search: "clan",
     }), {
-      loading: "Creating...",
-      success: "Clan Created",
-      error: "Error to create Clan"
+      loading: id ? "Updating..." : "Creating...",
+      success: id ? "Clan Updated" : "Clan Created",
+      error: id ? "Error to update Clan" : "Error to create Clan"
     });
     reset();
     setValue("type", ["CLAN"]);
+    if (id) {
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('id');
+      window.history.pushState({}, '', newUrl.toString());
+    }
   };
 
 
@@ -110,7 +119,7 @@ export function FormCla() {
             />
           </div>
           <Button className="w-full" type="submit">
-            Submit
+            {id ? "Update" : "Create"}
           </Button>
         </form>
       </CardContent>

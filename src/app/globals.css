@@ -60,47 +60,47 @@
 }
 
 .hokage {
-  @apply bg-gradient-to-r from-green-600 via-emerald-600 to-lime-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#006400] via-[#228B22] to-[#90EE90] bg-clip-text text-transparent;
 }
 
 .character {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#F97316] via-[#FF4500] to-[#EF4444] bg-clip-text text-transparent;
 }
 
 .clan {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#F97316] via-[#FF4500] to-[#EF4444] bg-clip-text text-transparent;
 }
 
 .kazekage {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#F0E68C] bg-clip-text text-transparent;
 }
 
 .raikage {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#0000FF] via-[#1E90FF] to-[#4169E1] bg-clip-text text-transparent;
 }
 
 .tsuchikage {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#B8860B] via-[#CD853F] to-[#9B7F5C] bg-clip-text text-transparent;
 }
 
 .mizukage {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#008080] via-[#20B2AA] to-[#7FFFD4] bg-clip-text text-transparent;
 }
 
 .akatsuki {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#540707] via-[#8B0000] to-[#ec5353] bg-clip-text text-transparent;
 }
 
 .jinchuuriki {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#F97316] via-[#FF4500] to-[#EF4444] bg-clip-text text-transparent;
 }
 
 .kekkei-genkai {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#F97316] via-[#FF4500] to-[#EF4444] bg-clip-text text-transparent;
 }
 
 .bijuu {
-  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[#F97316] via-[#FF4500] to-[#EF4444] bg-clip-text text-transparent;
 }
 
 html {

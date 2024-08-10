@@ -13,12 +13,13 @@ import { Label } from "@radix-ui/react-label";
 import { Button } from "../ui/button";
 import { kekkeiGenkaiSchema } from "prisma/zod/kekkei-genkai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useKekkeiGenkai } from "@/store/kekkei-genkai";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { postQuery } from "@/hooks/post";
 import { DropzoneImage } from "../dropzoneImage";
 import { Type } from "@prisma/client";
+import { useSearchParams } from "next/navigation";
+import { useGetCharacters } from "@/hooks/get-characters/hook";
 
 export type InputsKekkeiGenkai = {
   id?: string;
@@ -30,7 +31,9 @@ export type InputsKekkeiGenkai = {
 
 export function FormKekkeiGenkai() {
   const queryClient = useQueryClient();
-  const { kekkeiGenkai } = useKekkeiGenkai();
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id') ?? ""
+  const { data: kekkeiGenkai } = useGetCharacters<InputsKekkeiGenkai>("kekkei_genkai", id);
 
   const {mutateAsync} = useMutation({
     mutationFn: postQuery,
@@ -40,6 +43,7 @@ export function FormKekkeiGenkai() {
   });
 
   useEffect(() => {
+    if (!kekkeiGenkai) return;
     setValue("name", kekkeiGenkai.name);
     setValue("image", kekkeiGenkai.image);
     setValue("description", kekkeiGenkai.description ?? "");
@@ -49,9 +53,9 @@ export function FormKekkeiGenkai() {
     useForm<InputsKekkeiGenkai>({
       resolver: zodResolver(kekkeiGenkaiSchema),
       defaultValues: {
-        name: kekkeiGenkai.name,
-        image: kekkeiGenkai.image,
-        description: kekkeiGenkai.description,
+        name: kekkeiGenkai?.name,
+        image: kekkeiGenkai?.image,
+        description: kekkeiGenkai?.description,
         type: ["KEKKEI_GENKAI"],
       },
     });
@@ -59,7 +63,7 @@ export function FormKekkeiGenkai() {
   const onSubmit = (data: InputsKekkeiGenkai) => {
     toast.promise(mutateAsync({
       data: {
-        id: kekkeiGenkai.id,
+        id: id,
         name: data.name,
         image: data.image,
         description: data.description,
@@ -67,13 +71,18 @@ export function FormKekkeiGenkai() {
       },
       search: "kekkei_genkai",
     }), {
-      loading: "Creating...",
-      success: "Kekkei Genkai Created",
-      error: "Error to create Kekkei Genkai"
+      loading: id ? "Updating..." : "Creating...",
+      success: id ? "Kekkei Genkai Updated" : "Kekkei Genkai Created",
+      error: id ? "Error to update Kekkei Genkai" : "Error to create Kekkei Genkai"
     });
     reset();
     setValue("description", "");
     setValue("type", ["KEKKEI_GENKAI"]);
+    if (id) {
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('id');
+      window.history.pushState({}, '', newUrl.toString());
+    }
   };
 
   return (
@@ -103,7 +112,7 @@ export function FormKekkeiGenkai() {
           </div>
 
           <Button className="w-full" type="submit">
-            Submit
+            {id ? "Update" : "Create"}
           </Button>
         </form>
       </CardContent>

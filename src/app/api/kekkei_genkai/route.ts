@@ -46,12 +46,23 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+   try {
+    if (id) {
+      const kekkei_genkai = await prisma.kekkei_genkai.findUnique({
+        where: { id },
+      });
+      if (!kekkei_genkai) {
+        return new Response("Kekkei genkai not found", { status: 404 });
+      }
+      return new Response(JSON.stringify(kekkei_genkai), { status: 200 });
+    }
   const {
     type: [type],
   } = kekkeiGenkaiSchema
     .pick({ type: true })
     .parse({ type: [searchParams.get("type")] });
-  try {
+ 
     const kekkei_genkais = await prisma.kekkei_genkai.findMany({
       where: { type: { has: type } },
     });

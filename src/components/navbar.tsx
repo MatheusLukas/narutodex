@@ -1,7 +1,7 @@
 import { MotionHeader } from "@/lib/framer";
 import Image from "next/image";
 import { Icons } from "./icon";
-import { ButtonStyles } from "./ui/button";
+import { Button, ButtonStyles } from "./ui/button";
 import Link from "next/link";
 
 export function Navbar() {
@@ -26,25 +26,22 @@ export function Navbar() {
           />
         </Link>
         <div className="flex flex-row items-center justify-center gap-2">
+          <Button variant="ghost">
           <Link
-            className={ButtonStyles({
-              variant: "ghost",
-            })}
             href={{ pathname: "/create", query: { type: "character" } }}
           >
             Create
           </Link>
+          </Button>
+          <Button variant="ghost" size="icon">
           <Link
             href={"/"}
             target="_blank"
             rel="noreferrer"
-            className={ButtonStyles({
-              variant: "ghost",
-              size: "icon",
-            })}
           >
             <Icons.GitHub className="text-white h-[1.2rem] w-[1.2rem]" />
           </Link>
+          </Button>
         </div>
       </div>
     </MotionHeader>

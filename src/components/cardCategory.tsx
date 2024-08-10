@@ -1,12 +1,12 @@
 "use client";
 import { useGetCharacters } from "@/hooks/get-characters/hook";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { SkeletonCard } from "./skeletonCard";
 import { EditCards } from "./editCards";
 import { CharacterSchemaType } from "prisma/zod/character";
 import { BorderBeam } from "./magicui/border-beam";
+import { cn } from "mizuhara/utils";
 
 enum FieldType {
   natureType = "Nature Type",
