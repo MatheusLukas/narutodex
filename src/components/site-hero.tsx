@@ -1,5 +1,6 @@
 import { MotionDiv } from "@/lib/framer";
 import Image from "next/image";
+import WordRotate from "./magicui/word-rotate";
 
 export function SiteHero() {
   return (
@@ -21,10 +22,14 @@ export function SiteHero() {
         </span>{" "}
         using Next.js and Tailwind CSS
       </h1>
-      <h2 className="mx-auto max-w-[42rem] text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-        Find out about their characters, families, clans, and more about the
-        narutoverse
+      <div className="-space-y-3">
+      <h2 className="mx-auto text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8 flex items-center justify-center gap-2">
+        Find out about their <WordRotate className="text-balance leading-normal text-foreground/60 sm:text-xl sm:leading-8 w-[100px] text-start" words={[" characters","families","clans "]} />
       </h2>
+      <h2 className="mx-auto max-w-[42rem] text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+        and more about the narutoverse
+      </h2>
+      </div>
       <Image
         src="/kunai.png"
         alt="Naruto"

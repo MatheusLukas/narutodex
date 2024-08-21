@@ -7,6 +7,7 @@ import { EditCards } from "./editCards";
 import { CharacterSchemaType } from "prisma/zod/character";
 import { BorderBeam } from "./magicui/border-beam";
 import { cn } from "mizuhara/utils";
+import GradualSpacing from "./magicui/gradual-spacing";
 
 enum FieldType {
   natureType = "Nature Type",
@@ -90,15 +91,21 @@ export function CardCategory() {
     bijuu: "#EF4444",
   };
   return (
-    <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-16 w-fit">
+    <div className="container w-fit my-20 space-y-16">
+       <div>
+          <GradualSpacing text={search.replace(/_/g, ' ')} className={cn("text-balance text-6xl font-extrabold tracking-tight capitalize", search)} />
+      </div>
       {isLoading ? (
-        <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 absolute place-items">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-10">
           <SkeletonCard />
           <SkeletonCard />
           <SkeletonCard />
-        </div>
+          </div>
       ) : (
-        Array.isArray(data) &&
+
+        <div className="grid grid-rows-[2fr_10fr] gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {Array.isArray(data) &&
         data?.map((character: CharacterSchemaType) => (
           <div
             className="relative rounded-xl h-fit group animate-fade-right animate-duration-500"
@@ -155,6 +162,9 @@ export function CardCategory() {
             />
           </div>
         ))
+      }
+      </div>
+        </div>
       )}
     </div>
   );
