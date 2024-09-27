@@ -92,78 +92,88 @@ export function CardCategory() {
   };
   return (
     <div className="container w-fit my-20 space-y-16">
-       <div>
-          <GradualSpacing text={search.replace(/_/g, ' ')} className={cn("text-balance text-6xl font-extrabold tracking-tight capitalize", search)} />
+      <div>
+        <GradualSpacing
+          text={search.replace(/_/g, " ")}
+          className={cn(
+            "text-balance text-4xl md:text-6xl font-extrabold tracking-tight capitalize",
+            search
+          )}
+          key={search}
+        />
       </div>
       {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-10">
           <SkeletonCard />
           <SkeletonCard />
           <SkeletonCard />
-          </div>
+        </div>
       ) : (
-
         <div className="grid grid-rows-[2fr_10fr] gap-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {Array.isArray(data) &&
-        data?.map((character: CharacterSchemaType) => (
-          <div
-            className="relative rounded-xl h-fit group animate-fade-right animate-duration-500"
-            key={character.id}
-          >
-            <div className="h-fit w-80 md:w-96 bg-slate-800 relative rounded-xl group/edit">
-              <Image
-                className="object-cover w-full h-80 rounded-t-xl"
-                src={character.image}
-                alt={character.image}
-                width={1920}
-                height={1080}
-                draggable={false}
-              />
-              {pathname === "/create" && (
-                <EditCards character={character} search={search} />
-              )}
-              <div
-                className={cn(
-                  "absolute translate-x-1/2 right-1/2 flex items-center flex-col z-10",
-                  verifySearch(search) || "bottom-32"
-                )}
-              >
-                <p className={cn("text-3xl font-bold", search)}>
-                  {character.name}
-                </p>
-                <p className={cn("text-3xl font-bold", search)}>
-                  {character.clan}
-                </p>
-              </div>
-              <div className="absolute inset-0 bg-muted opacity-50 rounded-xl" />
-              <div>
-                <div className="p-3">
-                  {Object.keys(character).map((key: string) =>
-                    verifyKey(key) ? (
-                      <div key={key} className="text-white">
-                        <p>
-                          {FieldType[key as keyof typeof FieldType]}: {" "}
-                          {formatValue(
-                            character[key as keyof typeof character]
-                          )}
-                        </p>
+            {Array.isArray(data) && data.length > 0 ? (
+              data?.map((character: CharacterSchemaType) => (
+                <div
+                  className="relative rounded-xl h-fit group animate-fade-right animate-duration-500"
+                  key={character.id}
+                >
+                  <div className="h-fit w-80 md:w-96 bg-slate-800 relative rounded-xl group/edit">
+                    <Image
+                      className="object-cover w-full h-80 rounded-t-xl"
+                      src={character.image}
+                      alt={character.image}
+                      width={1920}
+                      height={1080}
+                      draggable={false}
+                    />
+                    {pathname === "/create" && (
+                      <EditCards character={character} search={search} />
+                    )}
+                    <div
+                      className={cn(
+                        "absolute translate-x-1/2 right-1/2 flex items-center flex-col z-10",
+                        verifySearch(search) || "bottom-32"
+                      )}
+                    >
+                      <p className={cn("text-3xl font-bold", search)}>
+                        {character.name}
+                      </p>
+                      <p className={cn("text-3xl font-bold", search)}>
+                        {character.clan}
+                      </p>
+                    </div>
+                    <div className="absolute inset-0 bg-muted opacity-50 rounded-xl" />
+                    <div>
+                      <div className="p-3">
+                        {Object.keys(character).map((key: string) =>
+                          verifyKey(key) ? (
+                            <div key={key} className="text-white">
+                              <p>
+                                {FieldType[key as keyof typeof FieldType]}:{" "}
+                                {formatValue(
+                                  character[key as keyof typeof character]
+                                )}
+                              </p>
+                            </div>
+                          ) : null
+                        )}
                       </div>
-                    ) : null
-                  )}
+                    </div>
+                  </div>
+                  <BorderBeam
+                    className="hidden md:block"
+                    colorFrom={colorFrom[search]}
+                    colorTo={colorTo[search]}
+                    borderWidth={3}
+                  />
                 </div>
+              ))
+            ) : (
+              <div className="text-xl font-bold text-center col-span-3">
+                No data found
               </div>
-            </div>
-            <BorderBeam
-              className="hidden md:block"
-              colorFrom={colorFrom[search]}
-              colorTo={colorTo[search]}
-              borderWidth={3}
-            />
+            )}
           </div>
-        ))
-      }
-      </div>
         </div>
       )}
     </div>

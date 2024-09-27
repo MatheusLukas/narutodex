@@ -19,9 +19,9 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { postQuery } from "@/hooks/post";
 import { DropzoneImage } from "../dropzoneImage";
-import { BijuuType, Type } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useGetCharacters } from "@/hooks/get-characters/hook";
+import { BijuuType, Type } from "@prisma/client";
 
 export type InputsBijuu = {
   name: BijuuType;
@@ -33,11 +33,11 @@ export type InputsBijuu = {
 
 export function FormBijuu() {
   const queryClient = useQueryClient();
-  const searchParams = useSearchParams()
-  const id = searchParams.get('id') ?? ""
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id") ?? "";
   const { data: bijuu } = useGetCharacters<InputsBijuu>("bijuu", id);
 
-  const {mutateAsync} = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: postQuery,
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["characters"] });
@@ -66,21 +66,24 @@ export function FormBijuu() {
 
   const onSubmit = (data: InputsBijuu) => {
     console.log("oi");
-    toast.promise(mutateAsync({
-      data: {
-        id: id,
-        name: data.name,
-        image: data.image,
-        jinchuurikis: data.jinchuurikis,
-        history: data.history,
-        type: data.type,
-      },
-      search: "bijuu",
-    }), {
-      loading: id ? "Updating..." : "Creating...",
-      success: id ? "Bijuu Updated" : "Bijuu Created",
-      error: id ? "Error to update Bijuu" : "Error to create Bijuu"
-    })
+    toast.promise(
+      mutateAsync({
+        data: {
+          id: id,
+          name: data.name,
+          image: data.image,
+          jinchuurikis: data.jinchuurikis,
+          history: data.history,
+          type: data.type,
+        },
+        search: "bijuu",
+      }),
+      {
+        loading: id ? "Updating..." : "Creating...",
+        success: id ? "Bijuu Updated" : "Bijuu Created",
+        error: id ? "Error to update Bijuu" : "Error to create Bijuu",
+      }
+    );
 
     reset();
     setValue("jinchuurikis", []);
@@ -88,11 +91,10 @@ export function FormBijuu() {
     setValue("type", ["BIJUU"]);
     if (id) {
       const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete('id');
-      window.history.pushState({}, '', newUrl.toString());
+      newUrl.searchParams.delete("id");
+      window.history.pushState({}, "", newUrl.toString());
     }
   };
-
 
   return (
     <Card className="max-w-[480px]">
