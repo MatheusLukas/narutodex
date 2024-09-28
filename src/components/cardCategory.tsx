@@ -41,15 +41,6 @@ export function CardCategory() {
   const verifyKey = (key: string) => {
     return key !== "id" && key !== "image" && key !== "name" && key !== "type";
   };
-  const verifySearch = (search: ColorKey) => {
-    return search === "character"
-      ? "bottom-40 md:bottom-32"
-      : search === "clan"
-      ? "bottom-20"
-      : search === "kekkei-genkai"
-      ? "bottom-20 md:bottom-16"
-      : search === "bijuu" && "bottom-24";
-  };
 
   const formatValue = (value: string | string[] | undefined | null) => {
     if (value === undefined || value === null) return "--/--";
@@ -109,7 +100,7 @@ export function CardCategory() {
           <SkeletonCard />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:gap-10 lg:gap-2 md:gap-2">
           {Array.isArray(data) && data.length > 0 ? (
             data?.map((character: CharacterSchemaType) => (
               <div
@@ -117,29 +108,26 @@ export function CardCategory() {
                 key={character.id}
               >
                 <div className="h-fit w-80 md:w-96 bg-slate-800 relative rounded-xl group/edit">
-                  <Image
-                    className="object-cover w-full h-80 rounded-t-xl"
-                    src={character.image}
-                    alt={character.image}
-                    width={1920}
-                    height={1080}
-                    draggable={false}
-                  />
-                  {pathname === "/create" && (
-                    <EditCards character={character} search={search} />
-                  )}
-                  <div
-                    className={cn(
-                      "absolute translate-x-1/2 right-1/2 flex items-center flex-col z-10",
-                      verifySearch(search) || "bottom-32"
+                  <div className="relative">
+                    <Image
+                      className="object-cover w-full h-80 rounded-t-xl"
+                      src={character.image}
+                      alt={character.image}
+                      width={1920}
+                      height={1080}
+                      draggable={false}
+                    />
+                    {pathname === "/create" && (
+                      <EditCards character={character} search={search} />
                     )}
-                  >
-                    <p className={cn("text-3xl font-bold", search)}>
-                      {character.name}
-                    </p>
-                    <p className={cn("text-3xl font-bold", search)}>
-                      {character.clan}
-                    </p>
+                    <div className="absolute translate-x-1/2 right-1/2 flex items-center flex-col z-10 bottom-6">
+                      <p className={cn("text-3xl font-bold", search)}>
+                        {character.name}
+                      </p>
+                      <p className={cn("text-3xl font-bold", search)}>
+                        {character.clan}
+                      </p>
+                    </div>
                   </div>
                   <div className="absolute inset-0 bg-muted opacity-50 rounded-xl" />
                   <div>
