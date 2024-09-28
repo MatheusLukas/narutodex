@@ -32,7 +32,11 @@ export function Navbar() {
             </Link>
           </Button>
           <Button variant="ghost" size="icon">
-            <Link href={"/"} target="_blank" rel="noreferrer">
+            <Link
+              href={"https://github.com/MatheusLukas/narutodex"}
+              target="_blank"
+              rel="noreferrer"
+            >
               <Icons.GitHub className="text-white h-[1.2rem] w-[1.2rem]" />
             </Link>
           </Button>
