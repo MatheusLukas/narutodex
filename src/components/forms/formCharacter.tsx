@@ -8,7 +8,7 @@ import {
   Card,
 } from "../ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { characterSchema } from "prisma/zod/character";
+import { characterSchema, CharacterSchemaType } from "prisma/zod/character";
 import { Input } from "../ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "../ui/button";
@@ -23,24 +23,16 @@ import { BijuuType, NatureType, Type } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useGetCharacters } from "@/hooks/get-characters/hook";
 
-export type Inputs = {
-  id?: string;
-  name: string;
-  image: string;
-  natureType: NatureType[];
-  type: Type[];
-  clan: string;
-  kekkeiGenkai: string[];
-  bijuu: BijuuType[];
-};
-
 export function FormCharacter() {
   const queryClient = useQueryClient();
-  const searchParams = useSearchParams()
-  const id = searchParams.get('id') ?? ""
-  const { data: character } = useGetCharacters<Inputs>("character", id);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id") ?? "";
+  const { data: character } = useGetCharacters<CharacterSchemaType>(
+    "character",
+    id
+  );
 
-  const {mutateAsync} = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: postQuery,
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["characters"] });
@@ -66,7 +58,7 @@ export function FormCharacter() {
     reset,
     watch,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<CharacterSchemaType>({
     resolver: zodResolver(characterSchema),
     defaultValues: {
       name: character?.name,
@@ -79,36 +71,44 @@ export function FormCharacter() {
     },
   });
 
-  const onSubmit = (data: Inputs) => {
-    toast.promise(mutateAsync({
-      data: {
-        id: id,
-        name: data.name,
-        image: data.image,
-        natureType: data.natureType,
-        type: data.type,
-        kekkeiGenkai: data.kekkeiGenkai,
-        bijuu: data.bijuu,
-        clan: data.clan,
-      },
-      search: "character",
-    }), {
-      loading: id ? "Updating..." : "Creating...",
-      success: id ? "Character Updated" : "Character Created",
-      error: id ? "Error to update Character" : "Error to create Character"
-    });
-    reset();
-    setValue("type", ["CHARACTER"]);
-    setValue("clan", "");
-    setValue("bijuu", []);
-    setValue("kekkeiGenkai", []);
-    if (id) {
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete('id');
-      window.history.pushState({}, '', newUrl.toString());
-    }
+  const onSubmit = (data: CharacterSchemaType) => {
+    toast.promise(
+      mutateAsync(
+        {
+          data: {
+            id: id ? id : null,
+            name: data.name,
+            image: data.image,
+            natureType: data.natureType,
+            type: data.type,
+            kekkeiGenkai: data.kekkeiGenkai,
+            bijuu: data.bijuu,
+            clan: data.clan,
+          },
+          search: "character",
+        },
+        {
+          onSuccess: () => {
+            reset();
+            setValue("type", ["CHARACTER"]);
+            setValue("clan", "");
+            setValue("bijuu", []);
+            setValue("kekkeiGenkai", []);
+            if (id) {
+              const newUrl = new URL(window.location.href);
+              newUrl.searchParams.delete("id");
+              window.history.pushState({}, "", newUrl.toString());
+            }
+          },
+        }
+      ),
+      {
+        loading: id ? "Updating..." : "Creating...",
+        success: id ? "Character Updated" : "Character Created",
+        error: id ? "Error to update Character" : "Error to create Character",
+      }
+    );
   };
-
 
   return (
     <Card className="max-w-[480px]">

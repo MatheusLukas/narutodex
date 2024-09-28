@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "../ui/button";
-import { clanSchema } from "prisma/zod/cla";
+import { clanSchema, ClanSchemaType } from "prisma/zod/cla";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -21,21 +21,13 @@ import { Type } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useGetCharacters } from "@/hooks/get-characters/hook";
 
-export type InputsCla = {
-  id?: string;
-  name: string;
-  image: string;
-  village: string;
-  type: Type[];
-};
-
 export function FormCla() {
   const queryClient = useQueryClient();
-  const searchParams = useSearchParams()
-  const id = searchParams.get('id') ?? ""
-  const { data: clan } = useGetCharacters<InputsCla>("clan", id);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id") ?? undefined;
+  const { data: clan } = useGetCharacters<ClanSchemaType>("clan", id);
 
-  const {mutateAsync} = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: postQuery,
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["characters"] });
@@ -57,7 +49,7 @@ export function FormCla() {
     control,
     watch,
     formState: { errors },
-  } = useForm<InputsCla>({
+  } = useForm<ClanSchemaType>({
     resolver: zodResolver(clanSchema),
     defaultValues: {
       id: undefined,
@@ -68,31 +60,39 @@ export function FormCla() {
     },
   });
 
-  const onSubmit = (data: InputsCla) => {
+  const onSubmit = (data: ClanSchemaType) => {
     console.log(data, "data");
-    toast.promise(mutateAsync({
-      data: {
-        id: id,
-        name: data.name,
-        image: data.image,
-        village: data.village,
-        type: data.type,
-      },
-      search: "clan",
-    }), {
-      loading: id ? "Updating..." : "Creating...",
-      success: id ? "Clan Updated" : "Clan Created",
-      error: id ? "Error to update Clan" : "Error to create Clan"
-    });
-    reset();
-    setValue("type", ["CLAN"]);
-    if (id) {
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete('id');
-      window.history.pushState({}, '', newUrl.toString());
-    }
+    toast.promise(
+      mutateAsync(
+        {
+          data: {
+            id: id,
+            name: data.name,
+            image: data.image,
+            village: data.village,
+            type: data.type,
+          },
+          search: "clan",
+        },
+        {
+          onSuccess: () => {
+            reset();
+            setValue("type", ["CLAN"]);
+            if (id) {
+              const newUrl = new URL(window.location.href);
+              newUrl.searchParams.delete("id");
+              window.history.pushState({}, "", newUrl.toString());
+            }
+          },
+        }
+      ),
+      {
+        loading: id ? "Updating..." : "Creating...",
+        success: id ? "Clan Updated" : "Clan Created",
+        error: id ? "Error to update Clan" : "Error to create Clan",
+      }
+    );
   };
-
 
   return (
     <Card className="max-w-[480px]">

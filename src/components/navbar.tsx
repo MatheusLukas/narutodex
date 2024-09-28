@@ -27,20 +27,14 @@ export function Navbar() {
         </Link>
         <div className="flex flex-row items-center justify-center gap-2">
           <Button variant="ghost">
-          <Link
-            href={{ pathname: "/create", query: { type: "character" } }}
-          >
-            Create
-          </Link>
+            <Link href={{ pathname: "/create", query: { type: "character" } }}>
+              Create
+            </Link>
           </Button>
           <Button variant="ghost" size="icon">
-          <Link
-            href={"/"}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Icons.GitHub className="text-white h-[1.2rem] w-[1.2rem]" />
-          </Link>
+            <Link href={"/"} target="_blank" rel="noreferrer">
+              <Icons.GitHub className="text-white h-[1.2rem] w-[1.2rem]" />
+            </Link>
           </Button>
         </div>
       </div>

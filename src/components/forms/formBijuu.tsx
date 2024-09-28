@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "../ui/button";
-import { bijuuSchema } from "prisma/zod/bijuu";
+import { bijuuSchema, BijuuSchemaType } from "prisma/zod/bijuu";
 import { InputTags } from "../tagsInput";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SelectBijuu } from "../select-bijuu";
@@ -23,19 +23,11 @@ import { useSearchParams } from "next/navigation";
 import { useGetCharacters } from "@/hooks/get-characters/hook";
 import { BijuuType, Type } from "@prisma/client";
 
-export type InputsBijuu = {
-  name: BijuuType;
-  image: string;
-  jinchuurikis: string[];
-  history: string;
-  type: Type[];
-};
-
 export function FormBijuu() {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const id = searchParams.get("id") ?? "";
-  const { data: bijuu } = useGetCharacters<InputsBijuu>("bijuu", id);
+  const { data: bijuu } = useGetCharacters<BijuuSchemaType>("bijuu", id);
 
   const { mutateAsync } = useMutation({
     mutationFn: postQuery,
@@ -53,7 +45,7 @@ export function FormBijuu() {
   }, [bijuu]);
 
   const { register, handleSubmit, control, reset, setValue, watch } =
-    useForm<InputsBijuu>({
+    useForm<BijuuSchemaType>({
       resolver: zodResolver(bijuuSchema),
       defaultValues: {
         name: bijuu?.name,
@@ -64,36 +56,41 @@ export function FormBijuu() {
       },
     });
 
-  const onSubmit = (data: InputsBijuu) => {
+  const onSubmit = (data: BijuuSchemaType) => {
     console.log("oi");
     toast.promise(
-      mutateAsync({
-        data: {
-          id: id,
-          name: data.name,
-          image: data.image,
-          jinchuurikis: data.jinchuurikis,
-          history: data.history,
-          type: data.type,
+      mutateAsync(
+        {
+          data: {
+            id: id ? id : null,
+            name: data.name,
+            image: data.image,
+            jinchuurikis: data.jinchuurikis,
+            history: data.history,
+            type: data.type,
+          },
+          search: "bijuu",
         },
-        search: "bijuu",
-      }),
+        {
+          onSuccess: () => {
+            reset();
+            setValue("jinchuurikis", []);
+            setValue("history", "");
+            setValue("type", ["BIJUU"]);
+            if (id) {
+              const newUrl = new URL(window.location.href);
+              newUrl.searchParams.delete("id");
+              window.history.pushState({}, "", newUrl.toString());
+            }
+          },
+        }
+      ),
       {
         loading: id ? "Updating..." : "Creating...",
         success: id ? "Bijuu Updated" : "Bijuu Created",
         error: id ? "Error to update Bijuu" : "Error to create Bijuu",
       }
     );
-
-    reset();
-    setValue("jinchuurikis", []);
-    setValue("history", "");
-    setValue("type", ["BIJUU"]);
-    if (id) {
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("id");
-      window.history.pushState({}, "", newUrl.toString());
-    }
   };
 
   return (

@@ -8,10 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select-shadcn";
-import { InputsBijuu } from "./forms/formBijuu";
+import { BijuuSchemaType } from "prisma/zod/bijuu";
 
 type Props = {
-  field: ControllerRenderProps<InputsBijuu, "name">;
+  field: ControllerRenderProps<BijuuSchemaType, "name">;
 };
 
 const bijuusName = [

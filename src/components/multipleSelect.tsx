@@ -1,13 +1,14 @@
 "use client";
 import { ControllerRenderProps } from "react-hook-form";
-import { Inputs } from "./forms/formCharacter";
+
 import { Select } from "./ui/select";
+import { CharacterSchemaType } from "@/zodAutoGenSchemas";
 
 type MultipleProps = {
   field:
-    | ControllerRenderProps<Inputs, "type">
-    | ControllerRenderProps<Inputs, "bijuu">
-    | ControllerRenderProps<Inputs, "natureType">;
+    | ControllerRenderProps<CharacterSchemaType, "type">
+    | ControllerRenderProps<CharacterSchemaType, "bijuu">
+    | ControllerRenderProps<CharacterSchemaType, "natureType">;
   type: "Character" | "Nature" | "Bijuu";
 };
 

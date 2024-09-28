@@ -34,14 +34,17 @@ export function EditCards({ character, search }: Props) {
     characterImage: string
   ) {
     if (characterId && characterImage && search) {
-       toast.promise(ky.delete("/api/uploadthing", {
-        json: { key: characterImage },
-      }), {
-        loading: "Deleting...",
-        success: "Character deleted",
-        error: "Error to delete character",
-      });
-      mutateAsync({ characterId, search })
+      toast.promise(
+        ky.delete("/api/uploadthing", {
+          json: { key: characterImage },
+        }),
+        {
+          loading: "Deleting...",
+          success: "Character deleted",
+          error: "Error to delete character",
+        }
+      );
+      mutateAsync({ characterId, search });
     }
   }
 
@@ -63,12 +66,14 @@ export function EditCards({ character, search }: Props) {
         </Button>
       </DialogDelete>
       <Button variant="ghost" className="animate-jump-in rounded-md" asChild>
-      <Link
-        href={{query: {type: search, id: character.id}}}
-        onClick={() => {scrollTop()}}
-      >
-        <Pen className="w-8 h-8 text-primary" />
-      </Link>
+        <Link
+          href={{ query: { type: search, id: character.id } }}
+          onClick={() => {
+            scrollTop();
+          }}
+        >
+          <Pen className="w-8 h-8 text-primary" />
+        </Link>
       </Button>
     </div>
   );

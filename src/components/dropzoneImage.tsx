@@ -5,19 +5,20 @@ import Image from "next/image";
 import { DialogDelete } from "./dialogDelete";
 import { Button } from "./ui/button";
 import { ControllerRenderProps } from "react-hook-form";
-import { Inputs } from "./forms/formCharacter";
-import { InputsBijuu } from "./forms/formBijuu";
-import { InputsCla } from "./forms/formCla";
+
 import { UploadDropzone } from "@/utils/uploadthing";
 import { toast } from "sonner";
-import { InputsKekkeiGenkai } from "./forms/formKekkeiGenkai";
+import { CharacterSchemaType } from "@/zodAutoGenSchemas";
+import { BijuuSchemaType } from "prisma/zod/bijuu";
+import { kekkeiGenkaiSchemaType } from "prisma/zod/kekkei-genkai";
+import { ClanSchemaType } from "prisma/zod/cla";
 
 type Props = {
   field:
-    | ControllerRenderProps<Inputs, "image">
-    | ControllerRenderProps<InputsBijuu, "image">
-    | ControllerRenderProps<InputsKekkeiGenkai, "image">
-    | ControllerRenderProps<InputsCla, "image">;
+    | ControllerRenderProps<CharacterSchemaType, "image">
+    | ControllerRenderProps<BijuuSchemaType, "image">
+    | ControllerRenderProps<kekkeiGenkaiSchemaType, "image">
+    | ControllerRenderProps<ClanSchemaType, "image">;
 };
 
 export function DropzoneImage({ field }: Props) {

@@ -20,10 +20,7 @@ export function DialogDelete({ children }: Props) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button
-          variant={"ghost"}
-          className="animate-jump-in rounded-md"
-        >
+        <Button variant={"ghost"} className="animate-jump-in rounded-md">
           <Trash className="w-8 h-8 text-destructive" />
         </Button>
       </AlertDialogTrigger>

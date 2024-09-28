@@ -1,21 +1,25 @@
 "use client";
 import { TagsInput } from "@ark-ui/react";
 import type { ControllerRenderProps } from "react-hook-form";
-import { Inputs } from "./forms/formCharacter";
-import { InputsBijuu } from "./forms/formBijuu";
+import { CharacterSchemaType } from "@/zodAutoGenSchemas";
+import { BijuuSchemaType } from "prisma/zod/bijuu";
+import { use } from "react";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   field:
-    | ControllerRenderProps<Inputs, "kekkeiGenkai">
-    | ControllerRenderProps<InputsBijuu, "jinchuurikis">;
+    | ControllerRenderProps<CharacterSchemaType, "kekkeiGenkai">
+    | ControllerRenderProps<BijuuSchemaType, "jinchuurikis">;
   text: string;
 };
 
 export function InputTags({ field, text }: Props) {
   const removeItem = (index: number) => {
-    const newValue = field.value.filter((_, i) => i !== index);
+    const newValue = field.value?.filter((_, i) => i !== index);
     field.onChange(newValue);
   };
+
+  const search = useSearchParams().get("type");
 
   return (
     <TagsInput.Root
@@ -41,7 +45,9 @@ export function InputTags({ field, text }: Props) {
             ))}
             <TagsInput.Input
               className="w-full bg-transparent py-4 focus-visible:outline-none"
-              placeholder="Add tag"
+              placeholder={
+                search === "bijuu" ? "Add jinchuuriki" : "Add Kekkei Genkai"
+              }
             />
           </TagsInput.Control>
 
