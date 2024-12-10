@@ -105,10 +105,20 @@ export function FormCla() {
           <div>
             <Label>Name Cla</Label>
             <Input {...register("name")} />
+            {errors.name && (
+              <span className="text-red-500 text-sm">
+                {errors.name.message}
+              </span>
+            )}
           </div>
           <div>
             <Label>Village</Label>
             <Input {...register("village")} />
+            {errors.village && (
+              <span className="text-red-500 text-sm">
+                {errors.village.message}
+              </span>
+            )}
           </div>
           <div>
             <Label>Image Uploader</Label>

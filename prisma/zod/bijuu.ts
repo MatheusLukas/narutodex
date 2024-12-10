@@ -5,7 +5,10 @@ export const bijuuSchema = z.object({
   id: z.string().uuid().nullish(),
   name: z.nativeEnum(BijuuType),
   image: z.string().url(),
-  history: z.string().optional(),
+  history: z
+    .string()
+    .max(500, "History length must be less than 500")
+    .optional(),
   jinchuurikis: z.array(z.string()).optional(),
   type: z.array(z.nativeEnum(Type)),
 });

@@ -121,10 +121,20 @@ export function FormCharacter() {
           <div>
             <Label>Name Character</Label>
             <Input {...register("name")} />
+            {errors.name && (
+              <span className="text-red-500 text-sm">
+                {errors.name.message}
+              </span>
+            )}
           </div>
           <div>
             <Label>Clan</Label>
             <Input {...register("clan")} />
+            {errors.clan && (
+              <span className="text-red-500 text-sm">
+                {errors.clan.message}
+              </span>
+            )}
           </div>
           <Controller
             control={control}

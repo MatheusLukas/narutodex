@@ -47,16 +47,22 @@ export function FormKekkeiGenkai() {
     setValue("description", kekkeiGenkai.description ?? "");
   }, [kekkeiGenkai]);
 
-  const { register, handleSubmit, reset, setValue, control } =
-    useForm<kekkeiGenkaiSchemaType>({
-      resolver: zodResolver(kekkeiGenkaiSchema),
-      defaultValues: {
-        name: kekkeiGenkai?.name,
-        image: kekkeiGenkai?.image,
-        description: kekkeiGenkai?.description,
-        type: ["KEKKEI_GENKAI"],
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm<kekkeiGenkaiSchemaType>({
+    resolver: zodResolver(kekkeiGenkaiSchema),
+    defaultValues: {
+      name: kekkeiGenkai?.name,
+      image: kekkeiGenkai?.image,
+      description: kekkeiGenkai?.description,
+      type: ["KEKKEI_GENKAI"],
+    },
+  });
 
   const onSubmit = (data: kekkeiGenkaiSchemaType) => {
     toast.promise(
@@ -105,11 +111,21 @@ export function FormKekkeiGenkai() {
           <div>
             <Label>Name Kekkei Genkai</Label>
             <Input {...register("name")} />
+            {errors.name && (
+              <span className="text-red-500 text-sm">
+                {errors.name.message}
+              </span>
+            )}
           </div>
 
           <div>
             <Label>Description</Label>
             <Input {...register("description")} />
+            {errors.description && (
+              <span className="text-red-500 text-sm">
+                {errors.description.message}
+              </span>
+            )}
           </div>
           <div>
             <Label>Image Uploader</Label>

@@ -44,17 +44,23 @@ export function FormBijuu() {
     setValue("history", bijuu.history ?? "");
   }, [bijuu]);
 
-  const { register, handleSubmit, control, reset, setValue, watch } =
-    useForm<BijuuSchemaType>({
-      resolver: zodResolver(bijuuSchema),
-      defaultValues: {
-        name: bijuu?.name,
-        image: bijuu?.image,
-        jinchuurikis: bijuu?.jinchuurikis,
-        history: bijuu?.history,
-        type: ["BIJUU"],
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<BijuuSchemaType>({
+    resolver: zodResolver(bijuuSchema),
+    defaultValues: {
+      name: bijuu?.name,
+      image: bijuu?.image,
+      jinchuurikis: bijuu?.jinchuurikis,
+      history: bijuu?.history,
+      type: ["BIJUU"],
+    },
+  });
 
   const onSubmit = (data: BijuuSchemaType) => {
     console.log("oi");
@@ -110,6 +116,11 @@ export function FormBijuu() {
           <div>
             <Label>History</Label>
             <Input {...register("history")} />
+            {errors.history && (
+              <span className="text-red-500 text-sm">
+                {errors.history.message}
+              </span>
+            )}
           </div>
 
           <Controller
